@@ -1012,30 +1012,6 @@ require('lazy').setup({
 
       -- Override the section_filename to show only the project directory
       ---@diagnostic disable-next-line: duplicate-set-field
-      statusline.section_filename = function()
-        -- Project root
-        local root = vim.fn.getcwd()
-        local project = vim.fn.fnamemodify(root, ':t')
-
-        -- File path relative to root
-        local filepath = vim.fn.expand '%:p'
-        local relative = vim.fn.fnamemodify(filepath, ':.' .. root)
-        if relative == '' then
-          relative = '[No Name]'
-        end
-
-        -- Status symbols
-        local status = ''
-        if vim.bo.readonly then
-          status = ''
-        elseif vim.bo.modified then
-          status = '󰏫'
-        else
-          status = ''
-        end
-
-        return string.format('%s -> %s %s', project, relative, status)
-      end
 
       -- ... and there is more!
       --  Check out: https://github.com/echasnovski/mini.nvim
@@ -1272,3 +1248,19 @@ end
 
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
+
+
+-- Command to close all buffers except the current one
+vim.api.nvim_create_user_command("BufOnly", function()
+  local current = vim.api.nvim_get_current_buf()
+  for _, buf in ipairs(vim.api.nvim_list_bufs()) do
+    if vim.api.nvim_buf_is_loaded(buf) and vim.bo[buf].buflisted then
+      if buf ~= current then
+        vim.api.nvim_buf_delete(buf, { force = false })
+      end
+    end
+  end
+end, { desc = "Close all buffers except the current one" })
+
+-- Map <leader>bK to run :BufOnly
+vim.keymap.set("n", "<leader>bK", "<cmd>BufOnly<cr>", { desc = "Keep only current buffer" })
