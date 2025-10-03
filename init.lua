@@ -214,10 +214,10 @@ vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper win
 -- vim.keymap.set("n", "<C-S-k>", "<C-w>K", { desc = "Move window to the upper" })
 
 -- Resize with arrows (delta: 2 lines)
-vim.keymap.set('n', '<C-S-Up>', ':resize -2<CR>', { noremap = true, silent = true })
-vim.keymap.set('n', '<C-S-Down>', ':resize +2<CR>', { noremap = true, silent = true })
-vim.keymap.set('n', '<C-S-Left>', ':vertical resize -2<CR>', { noremap = true, silent = true })
-vim.keymap.set('n', '<C-S-Right>', ':vertical resize +2<CR>', { noremap = true, silent = true })
+vim.keymap.set('n', '<M-S-Up>', ':resize -2<CR>', { noremap = true, silent = true })
+vim.keymap.set('n', '<M-S-Down>', ':resize +2<CR>', { noremap = true, silent = true })
+vim.keymap.set('n', '<M-S-Left>', ':vertical resize -2<CR>', { noremap = true, silent = true })
+vim.keymap.set('n', '<M-S-Right>', ':vertical resize +2<CR>', { noremap = true, silent = true })
 
 -- NeoTree Open
 vim.keymap.set('n', '<C-b>', ':Neotree toggle right reveal<CR>', { noremap = true, silent = true })
@@ -236,16 +236,16 @@ vim.keymap.set('n', '<leader>ww', '<C-w>w', { desc = 'Switch Split' })
 vim.keymap.set('n', '<leader>wc', ':close<CR>', { desc = 'Close Split' })
 
 -- movement
-vim.keymap.set('n', '<M-Right>', 'w', { noremap = true, silent = true }) -- Ctrl + Right: Move forward by word
-vim.keymap.set('n', '<M-Left>', 'b', { noremap = true, silent = true }) -- Ctrl + Left: Move backward by word
-vim.keymap.set('n', '<D-Right>', '$', { noremap = true, silent = true }) -- Alt + Right: Move to end of line
-vim.keymap.set('n', '<D-Left>', '^', { noremap = true, silent = true }) -- Alt + Left: Move to beginning of line
-vim.keymap.set('n', '<D-Up>', 'gg', { noremap = true, silent = true }) -- Alt + Up: Move to beginning of file
-vim.keymap.set('n', '<D-Down>', 'G', { noremap = true, silent = true }) -- Alt + Down: Move to end of file
+-- vim.keymap.set('n', '<M-Right>', 'w', { noremap = true, silent = true }) -- Ctrl + Right: Move forward by word
+-- vim.keymap.set('n', '<M-Left>', 'b', { noremap = true, silent = true }) -- Ctrl + Left: Move backward by word
+-- vim.keymap.set('n', '<D-Right>', '$', { noremap = true, silent = true }) -- Alt + Right: Move to end of line
+-- vim.keymap.set('n', '<D-Left>', '^', { noremap = true, silent = true }) -- Alt + Left: Move to beginning of line
+-- vim.keymap.set('n', '<D-Up>', 'gg', { noremap = true, silent = true }) -- Alt + Up: Move to beginning of file
+-- vim.keymap.set('n', '<D-Down>', 'G', { noremap = true, silent = true }) -- Alt + Down: Move to end of file
 
 -- quickfix list
-vim.keymap.set('n', '<D-j>', ':cn<CR>', { noremap = true, silent = true })
-vim.keymap.set('n', '<D-k>', ':cp<CR>', { noremap = true, silent = true })
+vim.keymap.set('n', '<M-j>', ':cn<CR>', { noremap = true, silent = true })
+vim.keymap.set('n', '<M-k>', ':cp<CR>', { noremap = true, silent = true })
 
 -----------------
 -- Visual mode --
@@ -256,24 +256,24 @@ vim.keymap.set('v', '<', '<gv', { noremap = true, silent = true })
 vim.keymap.set('v', '>', '>gv', { noremap = true, silent = true })
 
 -- movement
-vim.keymap.set('v', '<M-Right>', 'w', { noremap = true, silent = true }) -- Ctrl + Right: Move forward by word
-vim.keymap.set('v', '<M-Left>', 'b', { noremap = true, silent = true }) -- Ctrl + Left: Move backward by word
-vim.keymap.set('v', '<D-Right>', '$', { noremap = true, silent = true }) -- Alt + Right: Move to end of lin:
-vim.keymap.set('v', '<D-Left>', '^', { noremap = true, silent = true }) -- Alt + Left: Move to beginning of line
-vim.keymap.set('v', '<D-Up>', 'gg', { noremap = true, silent = true }) -- Alt + Up: Move to beginning of file
-vim.keymap.set('v', '<D-Down>', 'G', { noremap = true, silent = true }) -- Alt + Down: Move to end of file
-
+-- vim.keymap.set('v', '<M-Right>', 'w', { noremap = true, silent = true }) -- Ctrl + Right: Move forward by word
+-- vim.keymap.set('v', '<M-Left>', 'b', { noremap = true, silent = true }) -- Ctrl + Left: Move backward by word
+-- vim.keymap.set('v', '<D-Right>', '$', { noremap = true, silent = true }) -- Alt + Right: Move to end of lin:
+-- vim.keymap.set('v', '<D-Left>', '^', { noremap = true, silent = true }) -- Alt + Left: Move to beginning of line
+-- vim.keymap.set('v', '<D-Up>', 'gg', { noremap = true, silent = true }) -- Alt + Up: Move to beginning of file
+-- vim.keymap.set('v', '<D-Down>', 'G', { noremap = true, silent = true }) -- Alt + Down: Move to end of file
+--
 -----------------
 -- Insert mode --
 -----------------
 
 -- movement
-vim.keymap.set('i', '<M-Right>', '<C-o>w', { noremap = true, silent = true }) -- Ctrl + Right: Move forward by word
-vim.keymap.set('i', '<M-Left>', '<C-o>b', { noremap = true, silent = true }) -- Ctrl + Left: Move backward by word
-vim.keymap.set('i', '<D-Right>', '<C-o>$', { noremap = true, silent = true }) -- Alt + Right: Move to end of line
-vim.keymap.set('i', '<D-Left>', '<C-o>^', { noremap = true, silent = true }) -- Alt + Left: Move to beginning of line
-vim.keymap.set('i', '<D-Up>', '<C-o>gg', { noremap = true, silent = true }) -- Alt + Up: Move to beginning of file
-vim.keymap.set('i', '<D-Down>', '<C-o>G', { noremap = true, silent = true }) -- Alt + Down: Move to end of file
+-- vim.keymap.set('i', '<M-Right>', '<C-o>w', { noremap = true, silent = true }) -- Ctrl + Right: Move forward by word
+-- vim.keymap.set('i', '<M-Left>', '<C-o>b', { noremap = true, silent = true }) -- Ctrl + Left: Move backward by word
+-- vim.keymap.set('i', '<D-Right>', '<C-o>$', { noremap = true, silent = true }) -- Alt + Right: Move to end of line
+-- vim.keymap.set('i', '<D-Left>', '<C-o>^', { noremap = true, silent = true }) -- Alt + Left: Move to beginning of line
+-- vim.keymap.set('i', '<D-Up>', '<C-o>gg', { noremap = true, silent = true }) -- Alt + Up: Move to beginning of file
+-- vim.keymap.set('i', '<D-Down>', '<C-o>G', { noremap = true, silent = true }) -- Alt + Down: Move to end of file
 
 -- [[ Basic Autocommands ]]
 --  See `:help lua-guide-autocommands`
