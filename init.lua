@@ -221,6 +221,7 @@ vim.keymap.set('n', '<C-S-Right>', ':vertical resize +2<CR>', { noremap = true, 
 
 -- NeoTree Open
 vim.keymap.set('n', '<C-b>', ':Neotree toggle right reveal<CR>', { noremap = true, silent = true })
+vim.keymap.set('n', '<C-u>', ':UndotreeToggle<CR>', { noremap = true, silent = true })
 
 -- Buffers
 vim.keymap.set('n', '<leader>bs', ':w<CR>', { noremap = true, silent = true }) -- Save buffer
@@ -244,8 +245,8 @@ vim.keymap.set('n', '<D-Up>', 'gg', { noremap = true, silent = true }) -- Alt + 
 vim.keymap.set('n', '<D-Down>', 'G', { noremap = true, silent = true }) -- Alt + Down: Move to end of file
 
 -- quickfix list
-vim.keymap.set('n', '<M-j>', ':cn<CR>', { noremap = true, silent = true })
-vim.keymap.set('n', '<M-k>', ':cp<CR>', { noremap = true, silent = true })
+vim.keymap.set('n', '<D-j>', ':cn<CR>', { noremap = true, silent = true })
+vim.keymap.set('n', '<D-k>', ':cp<CR>', { noremap = true, silent = true })
 
 -----------------
 -- Visual mode --
@@ -951,7 +952,16 @@ require('lazy').setup({
       signature = { enabled = true },
     },
   },
-
+  {
+    "toppair/peek.nvim",
+    event = { "VeryLazy" },
+    build = "deno task --quiet build:fast",
+    config = function()
+        require("peek").setup()
+        vim.api.nvim_create_user_command("PeekOpen", require("peek").open, {})
+        vim.api.nvim_create_user_command("PeekClose", require("peek").close, {})
+    end,
+  },
   {
     'projekt0n/github-nvim-theme',
   }, --  github
@@ -1111,6 +1121,9 @@ require('lazy').setup({
   -- rainbowcsv
   { 'mechatroner/rainbow_csv' },
 
+  -- undo tree
+  { 'mbbill/undotree' },
+
   -- startup
   {
     'nvimdev/dashboard-nvim',
@@ -1153,6 +1166,7 @@ require('lazy').setup({
             { icon = '  ', desc = 'Find File', key = '<leader>ff', action = 'Telescope find_files' },
             { icon = '󱎸  ', desc = 'Live Grep', key = '<leader>fg', action = 'Telescope live_grep' },
             { icon = '󰙅  ', desc = 'File Sidebar', key = '<C-b>', action = 'Neotree toggle right reveal' },
+            { icon = '↺  ', desc = 'Undo Tree', key = '<C-u>', action = 'UndotreeToggle' },
             { icon = '󰗼  ', desc = 'Quit', key = ':q', action = 'quit' },
           },
 
