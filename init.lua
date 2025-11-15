@@ -221,6 +221,7 @@ vim.keymap.set('n', '<C-S-Right>', ':vertical resize +2<CR>', { noremap = true, 
 
 -- NeoTree Open
 vim.keymap.set('n', '<C-b>', ':Neotree toggle right reveal<CR>', { noremap = true, silent = true })
+vim.keymap.set('n', '<C-u>', ':UndotreeToggle<CR>', { noremap = true, silent = true })
 
 -- Buffers
 vim.keymap.set('n', '<leader>bs', ':w<CR>', { noremap = true, silent = true }) -- Save buffer
@@ -973,6 +974,12 @@ require('lazy').setup({
       vim.cmd 'colorscheme catppuccin-mocha'
     end,
   },
+  {
+    'barrientosvctor/abyss.nvim',
+  },
+  {
+    'Mofiqul/vscode.nvim',
+  },
 
   -- Highlight todo, notes, etc in comments
   { 'folke/todo-comments.nvim', event = 'VimEnter', dependencies = { 'nvim-lua/plenary.nvim' }, opts = { signs = false } },
@@ -1102,7 +1109,21 @@ require('lazy').setup({
     },
     config = true,
   },
+  -- Markdown Preview
+  {
+    'toppair/peek.nvim',
+    event = { 'VeryLazy' },
+    build = 'deno task --quiet build:fast',
+    config = function()
+      require('peek').setup()
 
+      vim.api.nvim_create_user_command('PeekOpen', require('peek').open, {})
+
+      vim.api.nvim_create_user_command('PeekClose', require('peek').close, {})
+    end,
+  },
+  -- undo tree
+  { 'mbbill/undotree' },
   -- rainbowcsv
   { 'mechatroner/rainbow_csv' },
   {
@@ -1146,6 +1167,7 @@ require('lazy').setup({
             { icon = '  ', desc = 'Find File', key = '<leader>ff', action = 'Telescope find_files' },
             { icon = '󱎸  ', desc = 'Live Grep', key = '<leader>fg', action = 'Telescope live_grep' },
             { icon = '󰙅  ', desc = 'File Sidebar', key = '<C-b>', action = 'Neotree toggle right reveal' },
+            { icon = '↺  ', desc = 'Undo Tree', key = '<C-u>', action = 'UndotreeToggle' },
             { icon = '󰗼  ', desc = 'Quit', key = ':q', action = 'quit' },
           },
 
@@ -1249,9 +1271,8 @@ end
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
 
-
 -- Command to close all buffers except the current one
-vim.api.nvim_create_user_command("BufOnly", function()
+vim.api.nvim_create_user_command('BufOnly', function()
   local current = vim.api.nvim_get_current_buf()
   for _, buf in ipairs(vim.api.nvim_list_bufs()) do
     if vim.api.nvim_buf_is_loaded(buf) and vim.bo[buf].buflisted then
@@ -1260,7 +1281,7 @@ vim.api.nvim_create_user_command("BufOnly", function()
       end
     end
   end
-end, { desc = "Close all buffers except the current one" })
+end, { desc = 'Close all buffers except the current one' })
 
 -- Map <leader>bK to run :BufOnly
-vim.keymap.set("n", "<leader>bK", "<cmd>BufOnly<cr>", { desc = "Keep only current buffer" })
+vim.keymap.set('n', '<leader>bK', '<cmd>BufOnly<cr>', { desc = 'Keep only current buffer' })
