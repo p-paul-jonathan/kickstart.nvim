@@ -525,9 +525,9 @@ require('lazy').setup({
       vim.keymap.set('n', '<leader>ss', builtin.builtin, { desc = '[S]earch [S]elect Telescope' })
       vim.keymap.set('n', '<leader>fw', builtin.grep_string, { desc = '[S]earch current [W]ord' })
       vim.keymap.set('n', '<leader>fg', builtin.live_grep, { desc = '[S]earch by [G]rep' })
-      vim.keymap.set('n', '<leader>sd', builtin.diagnostics, { desc = '[S]earch [D]iagnostics' })
-      vim.keymap.set('n', '<leader>sr', builtin.resume, { desc = '[S]earch [R]esume' })
-      vim.keymap.set('n', '<leader>s.', builtin.oldfiles, { desc = '[S]earch Recent Files ("." for repeat)' })
+      vim.keymap.set('n', '<leader>fd', builtin.diagnostics, { desc = '[S]earch [D]iagnostics' })
+      vim.keymap.set('n', '<leader>fr', builtin.resume, { desc = '[S]earch [R]esume' })
+      vim.keymap.set('n', '<leader>f.', builtin.oldfiles, { desc = '[S]earch Recent Files ("." for repeat)' })
       vim.keymap.set('n', '<leader>fb', builtin.buffers, { desc = '[ ] Find existing buffers' })
       vim.keymap.set('n', '<leader>ht', builtin.colorscheme, { desc = '[H]ighlight [T]heme (colorscheme)' })
 
@@ -542,7 +542,7 @@ require('lazy').setup({
 
       -- It's also possible to pass additional configuration options.
       --  See `:help telescope.builtin.live_grep()` for information about particular keys
-      vim.keymap.set('n', '<leader>s/', function()
+      vim.keymap.set('n', '<leader>f/', function()
         builtin.live_grep {
           grep_open_files = true,
           prompt_title = 'Live Grep in Open Files',
@@ -550,7 +550,7 @@ require('lazy').setup({
       end, { desc = '[S]earch [/] in Open Files' })
 
       -- Shortcut for searching your Neovim configuration files
-      vim.keymap.set('n', '<leader>sn', function()
+      vim.keymap.set('n', '<leader>fn', function()
         builtin.find_files { cwd = vim.fn.stdpath 'config' }
       end, { desc = '[S]earch [N]eovim files' })
     end,
@@ -953,13 +953,13 @@ require('lazy').setup({
     },
   },
   {
-    "toppair/peek.nvim",
-    event = { "VeryLazy" },
-    build = "deno task --quiet build:fast",
+    'toppair/peek.nvim',
+    event = { 'VeryLazy' },
+    build = 'deno task --quiet build:fast',
     config = function()
-        require("peek").setup()
-        vim.api.nvim_create_user_command("PeekOpen", require("peek").open, {})
-        vim.api.nvim_create_user_command("PeekClose", require("peek").close, {})
+      require('peek').setup()
+      vim.api.nvim_create_user_command('PeekOpen', require('peek').open, {})
+      vim.api.nvim_create_user_command('PeekClose', require('peek').close, {})
     end,
   },
   {
@@ -1056,6 +1056,8 @@ require('lazy').setup({
     end,
   },
 
+  { 'Stianlyng/neoranger.nvim' },
+
   { -- File Explorer
     'nvim-neo-tree/neo-tree.nvim',
     branch = 'v3.x',
@@ -1124,6 +1126,31 @@ require('lazy').setup({
   -- undo tree
   { 'mbbill/undotree' },
 
+  -- codesnap
+  {
+    'mistricky/codesnap.nvim',
+    build = 'make',
+    config = function()
+      require('codesnap').setup {
+        bg_color = '#333333',
+        watermark = '',
+        has_line_number = true,
+      }
+    end,
+  },
+
+  -- file outline
+  {
+    'hedyhli/outline.nvim',
+    config = function()
+      -- Example mapping to toggle outline
+      vim.keymap.set('n', '<leader>o', '<cmd>Outline<CR>', { desc = 'Toggle Outline' })
+
+      require('outline').setup {
+        -- Your setup opts here (leave empty to use defaults)
+      }
+    end,
+  },
   -- startup
   {
     'nvimdev/dashboard-nvim',
@@ -1271,9 +1298,8 @@ end
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
 
-
 -- Command to close all buffers except the current one
-vim.api.nvim_create_user_command("BufOnly", function()
+vim.api.nvim_create_user_command('BufOnly', function()
   local current = vim.api.nvim_get_current_buf()
   for _, buf in ipairs(vim.api.nvim_list_bufs()) do
     if vim.api.nvim_buf_is_loaded(buf) and vim.bo[buf].buflisted then
@@ -1282,7 +1308,7 @@ vim.api.nvim_create_user_command("BufOnly", function()
       end
     end
   end
-end, { desc = "Close all buffers except the current one" })
+end, { desc = 'Close all buffers except the current one' })
 
 -- Map <leader>bK to run :BufOnly
-vim.keymap.set("n", "<leader>bK", "<cmd>BufOnly<cr>", { desc = "Keep only current buffer" })
+vim.keymap.set('n', '<leader>bK', '<cmd>BufOnly<cr>', { desc = 'Keep only current buffer' })
