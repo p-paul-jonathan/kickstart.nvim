@@ -248,6 +248,15 @@ vim.keymap.set('n', '<A-Down>', 'G', { noremap = true, silent = true }) -- Alt +
 vim.keymap.set('n', '<A-j>', ':cn<CR>', { noremap = true, silent = true })
 vim.keymap.set('n', '<A-k>', ':cp<CR>', { noremap = true, silent = true })
 
+
+-- select all
+vim.keymap.set('n', '<C-a>', 'ggVG', { noremap = true, silent = true })
+
+-- copy paste
+vim.keymap.set('n', '<C-c>', 'yy', { noremap = true, silent = true })
+vim.keymap.set('n', '<C-x>', 'dd', { noremap = true, silent = true })
+vim.keymap.set('n', '<C-v>', 'p', { noremap = true, silent = true })
+
 -----------------
 -- Visual mode --
 -----------------
@@ -263,6 +272,11 @@ vim.keymap.set('v', '<A-Right>', '$', { noremap = true, silent = true }) -- Alt 
 vim.keymap.set('v', '<A-Left>', '^', { noremap = true, silent = true }) -- Alt + Left: Move to beginning of line
 vim.keymap.set('v', '<A-Up>', 'gg', { noremap = true, silent = true }) -- Alt + Up: Move to beginning of file
 vim.keymap.set('v', '<A-Down>', 'G', { noremap = true, silent = true }) -- Alt + Down: Move to end of file
+
+-- copy paste
+vim.keymap.set('v', '<C-c>', 'y', { noremap = true, silent = true })
+vim.keymap.set('v', '<C-x>', 'd', { noremap = true, silent = true })
+vim.keymap.set('v', '<C-v>', 'p', { noremap = true, silent = true })
 
 -----------------
 -- Insert mode --
