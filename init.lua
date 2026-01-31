@@ -248,7 +248,6 @@ vim.keymap.set('n', '<A-Down>', 'G', { noremap = true, silent = true }) -- Alt +
 vim.keymap.set('n', '<A-j>', ':cn<CR>', { noremap = true, silent = true })
 vim.keymap.set('n', '<A-k>', ':cp<CR>', { noremap = true, silent = true })
 
-
 -- select all
 vim.keymap.set('n', '<C-a>', 'ggVG', { noremap = true, silent = true })
 
@@ -1140,6 +1139,31 @@ require('lazy').setup({
   { 'mbbill/undotree' },
   -- rainbowcsv
   { 'mechatroner/rainbow_csv' },
+
+  {
+    'mistricky/codesnap.nvim',
+    build = 'make',
+    config = function()
+      require('codesnap').setup {
+        bg_color = '#333333',
+        watermark = '',
+        has_line_number = true,
+      }
+    end,
+  },
+
+  -- file outline
+  {
+    'hedyhli/outline.nvim',
+    config = function()
+      -- Example mapping to toggle outline
+      vim.keymap.set('n', '<leader>o', '<cmd>Outline<CR>', { desc = 'Toggle Outline' })
+
+      require('outline').setup {
+        -- Your setup opts here (leave empty to use defaults)
+      }
+    end,
+  },
   {
     'nvimdev/dashboard-nvim',
     event = 'VimEnter',
