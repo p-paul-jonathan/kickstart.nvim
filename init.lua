@@ -303,6 +303,90 @@ vim.api.nvim_create_autocmd('TextYankPost', {
   end,
 })
 
+-- Use Silicon to Copy to clipboard and save to file
+vim.api.nvim_create_user_command('SiliconClip', function(opts)
+  local start_line = opts.line1
+  local end_line = opts.line2
+
+  local lines = vim.api.nvim_buf_get_lines(0, start_line - 1, end_line, false)
+
+  if #lines == 0 then
+    return
+  end
+
+  local tmpfile = vim.fn.tempname() .. '.txt'
+  vim.fn.writefile(lines, tmpfile)
+
+  local ft = vim.bo.filetype
+
+  local cmd = {
+    'silicon',
+    tmpfile,
+    '--language',
+    ft,
+    '--to-clipboard',
+  }
+
+  vim.fn.jobstart(cmd, {
+    on_exit = function()
+      vim.schedule(function()
+        vim.fn.delete(tmpfile)
+        print 'Code snapshot copied to clipboard'
+      end)
+    end,
+  })
+end, {
+  range = true,
+  desc = 'Copy visual selection to clipboard using silicon',
+})
+
+vim.api.nvim_create_user_command('SiliconFile', function(opts)
+  local start_line = opts.line1
+  local end_line = opts.line2
+
+  local lines = vim.api.nvim_buf_get_lines(0, start_line - 1, end_line, false)
+
+  if #lines == 0 then
+    return
+  end
+
+  local tmpfile = vim.fn.tempname() .. '.txt'
+  vim.fn.writefile(lines, tmpfile)
+
+  local out_dir = vim.fn.expand '~/Pictures/CodeSnaps'
+  vim.fn.mkdir(out_dir, 'p')
+
+  local outfile = string.format('%s/codesnap-%s.png', out_dir, os.date '%Y%m%d%H%M%S')
+
+  local ft = vim.bo.filetype
+
+  local cmd = {
+    'silicon',
+    tmpfile,
+    '--language',
+    ft,
+    '--output',
+    outfile,
+  }
+
+  vim.fn.jobstart(cmd, {
+    on_exit = function(_, code)
+      vim.schedule(function()
+        vim.fn.delete(tmpfile)
+
+        if code == 0 then
+          print('Saved code snapshot to ' .. outfile)
+        else
+          print 'Silicon failed to save image'
+        end
+      end)
+    end,
+  })
+end, {
+  range = true,
+  desc = 'Save visual selection as image using silicon',
+})
+
 -- [[ Install `lazy.nvim` plugin manager ]]
 --    See `:help lazy.nvim.txt` or https://github.com/folke/lazy.nvim for more info
 local lazypath = vim.fn.stdpath 'data' .. '/lazy/lazy.nvim'
@@ -1140,18 +1224,6 @@ require('lazy').setup({
   -- rainbowcsv
   { 'mechatroner/rainbow_csv' },
 
-  {
-    'mistricky/codesnap.nvim',
-    build = 'make',
-    config = function()
-      require('codesnap').setup {
-        bg_color = '#333333',
-        watermark = '',
-        has_line_number = true,
-      }
-    end,
-  },
-
   -- file outline
   {
     'hedyhli/outline.nvim',
@@ -1240,6 +1312,14 @@ require('lazy').setup({
       },
       indent = { enable = true, disable = { 'ruby' } },
     },
+    config = function(_, opts)
+      -- Protective call: If treesitter fails to load, don't crash neovim
+      local status_ok, configs = pcall(require, 'nvim-treesitter.configs')
+      if not status_ok then
+        return
+      end
+      configs.setup(opts)
+    end,
     -- There are additional nvim-treesitter modules that you can use to interact
     -- with nvim-treesitter. You should go explore a few and see what interests you:
     --
