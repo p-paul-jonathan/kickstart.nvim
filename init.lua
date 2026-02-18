@@ -244,6 +244,11 @@ vim.keymap.set('n', '<D-Left>', '^', { noremap = true, silent = true }) -- Alt +
 vim.keymap.set('n', '<D-Up>', 'gg', { noremap = true, silent = true }) -- Alt + Up: Move to beginning of file
 vim.keymap.set('n', '<D-Down>', 'G', { noremap = true, silent = true }) -- Alt + Down: Move to end of file
 
+-- select, copy, paste
+vim.keymap.set('n', '<D-a>', 'ggVG', { noremap = true, silent = true })
+vim.keymap.set('n', '<D-c>', 'yy', { noremap = true, silent = true })
+vim.keymap.set('n', '<D-v>', 'p', { noremap = true, silent = true })
+
 -- quickfix list
 vim.keymap.set('n', '<D-j>', ':cn<CR>', { noremap = true, silent = true })
 vim.keymap.set('n', '<D-k>', ':cp<CR>', { noremap = true, silent = true })
@@ -263,7 +268,11 @@ vim.keymap.set('v', '<D-Right>', '$', { noremap = true, silent = true }) -- Alt 
 vim.keymap.set('v', '<D-Left>', '^', { noremap = true, silent = true }) -- Alt + Left: Move to beginning of line
 vim.keymap.set('v', '<D-Up>', 'gg', { noremap = true, silent = true }) -- Alt + Up: Move to beginning of file
 vim.keymap.set('v', '<D-Down>', 'G', { noremap = true, silent = true }) -- Alt + Down: Move to end of file
---
+
+-- copy, paste
+vim.keymap.set('v', '<D-c>', 'y', { noremap = true, silent = true })
+vim.keymap.set('v', '<D-v>', 'p', { noremap = true, silent = true })
+
 -----------------
 -- Insert mode --
 -----------------
@@ -289,6 +298,99 @@ vim.keymap.set('i', '<D-Down>', '<C-o>G', { noremap = true, silent = true }) -- 
 --     vim.hl.on_yank()
 --   end,
 -- })
+
+-- Use Silicon to Copy to clipboard and save to file
+vim.api.nvim_create_user_command('SiliconClip', function(opts)
+  local start_line = opts.line1
+  local end_line = opts.line2
+
+  local lines = vim.api.nvim_buf_get_lines(0, start_line - 1, end_line, false)
+
+  if #lines == 0 then
+    return
+  end
+
+  local tmpfile = vim.fn.tempname() .. '.txt'
+  vim.fn.writefile(lines, tmpfile)
+
+  local ft = vim.bo.filetype
+
+  local cmd = {
+    'silicon',
+    tmpfile,
+    '--language',
+    ft,
+    '--line-offset',
+    tostring(start_line),
+    '--to-clipboard',
+  }
+
+  vim.fn.jobstart(cmd, {
+    on_exit = function(_, code)
+      vim.schedule(function()
+        vim.fn.delete(tmpfile)
+
+        if code == 0 then
+          print 'Saved code snapshot to clipboard'
+        else
+          print 'Silicon failed to save image'
+        end
+      end)
+    end,
+  })
+end, {
+  range = true,
+  desc = 'Copy visual selection to clipboard using silicon',
+})
+
+vim.api.nvim_create_user_command('SiliconFile', function(opts)
+  local start_line = opts.line1
+  local end_line = opts.line2
+
+  local lines = vim.api.nvim_buf_get_lines(0, start_line - 1, end_line, false)
+
+  if #lines == 0 then
+    return
+  end
+
+  local tmpfile = vim.fn.tempname() .. '.txt'
+  vim.fn.writefile(lines, tmpfile)
+
+  local out_dir = vim.fn.expand '~/Pictures/CodeSnaps'
+  vim.fn.mkdir(out_dir, 'p')
+
+  local outfile = string.format('%s/codesnap-%s.png', out_dir, os.date '%Y%m%d%H%M%S')
+
+  local ft = vim.bo.filetype
+
+  local cmd = {
+    'silicon',
+    tmpfile,
+    '--language',
+    ft,
+    '--line-offset',
+    tostring(start_line),
+    '--output',
+    outfile,
+  }
+
+  vim.fn.jobstart(cmd, {
+    on_exit = function(_, code)
+      vim.schedule(function()
+        vim.fn.delete(tmpfile)
+
+        if code == 0 then
+          print('Saved code snapshot to ' .. outfile)
+        else
+          print 'Silicon failed to save image'
+        end
+      end)
+    end,
+  })
+end, {
+  range = true,
+  desc = 'Save visual selection as image using silicon',
+})
 
 -- [[ Install `lazy.nvim` plugin manager ]]
 --    See `:help lazy.nvim.txt` or https://github.com/folke/lazy.nvim for more info
@@ -451,6 +553,13 @@ require('lazy').setup({
 
       -- Useful for getting pretty icons, but requires a Nerd Font.
       { 'nvim-tree/nvim-web-devicons', enabled = vim.g.have_nerd_font },
+      -- filter files using ripgrep arguments
+      {
+        'nvim-telescope/telescope-live-grep-args.nvim',
+        -- This will not install any breaking changes.
+        -- For major updates, this must be adjusted manually.
+        version = '^1.0.0',
+      },
     },
     config = function()
       -- Telescope is a fuzzy finder that comes with a lot of different things that
@@ -516,6 +625,7 @@ require('lazy').setup({
       -- Enable Telescope extensions if they are installed
       pcall(require('telescope').load_extension, 'fzf')
       pcall(require('telescope').load_extension, 'ui-select')
+      pcall(require('telescope').load_extension, 'live_grep_args')
 
       -- See `:help telescope.builtin`
       local builtin = require 'telescope.builtin'
@@ -967,11 +1077,6 @@ require('lazy').setup({
   }, --  github
   {
     'sainnhe/everforest',
-    lazy = false,
-    priority = 1000,
-    config = function()
-      vim.cmd 'colorscheme everforest'
-    end,
   },
   {
     'ellisonleao/gruvbox.nvim',
@@ -981,6 +1086,11 @@ require('lazy').setup({
   },
   {
     'catppuccin/nvim',
+    lazy = false,
+    priority = 1000,
+    config = function()
+      vim.cmd 'colorscheme catppuccin-macchiato'
+    end,
   },
   {
     'ribru17/bamboo.nvim',
@@ -1125,19 +1235,6 @@ require('lazy').setup({
 
   -- undo tree
   { 'mbbill/undotree' },
-
-  -- codesnap
-  {
-    'mistricky/codesnap.nvim',
-    build = 'make',
-    config = function()
-      require('codesnap').setup {
-        bg_color = '#333333',
-        watermark = '',
-        has_line_number = true,
-      }
-    end,
-  },
 
   -- file outline
   {
