@@ -1080,17 +1080,17 @@ require('lazy').setup({
   },
   {
     'ellisonleao/gruvbox.nvim',
+    lazy = false,
+    priority = 1000,
+    config = function()
+      vim.cmd 'colorscheme gruvbox'
+    end,
   },
   {
     'shaunsingh/nord.nvim',
   },
   {
     'catppuccin/nvim',
-    lazy = false,
-    priority = 1000,
-    config = function()
-      vim.cmd 'colorscheme catppuccin-macchiato'
-    end,
   },
   {
     'ribru17/bamboo.nvim',
@@ -1409,3 +1409,4 @@ end, { desc = 'Close all buffers except the current one' })
 
 -- Map <leader>bK to run :BufOnly
 vim.keymap.set('n', '<leader>bK', '<cmd>BufOnly<cr>', { desc = 'Keep only current buffer' })
+vim.cmd 'packadd cfilter'
