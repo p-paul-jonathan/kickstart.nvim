@@ -1059,17 +1059,17 @@ require('lazy').setup({
   },
   {
     'shaunsingh/nord.nvim',
+    lazy = false,
+    priority = 1000,
+    config = function()
+      vim.cmd 'colorscheme nord'
+    end,
   },
   {
     'sainnhe/everforest',
   },
   {
     'catppuccin/nvim',
-    lazy = false,
-    priority = 1000,
-    config = function()
-      vim.cmd 'colorscheme catppuccin-mocha'
-    end,
   },
   {
     'barrientosvctor/abyss.nvim',
