@@ -289,6 +289,32 @@ vim.keymap.set('i', '<A-Left>', '<C-o>^', { noremap = true, silent = true }) -- 
 vim.keymap.set('i', '<A-Up>', '<C-o>gg', { noremap = true, silent = true }) -- Alt + Up: Move to beginning of file
 vim.keymap.set('i', '<A-Down>', '<C-o>G', { noremap = true, silent = true }) -- Alt + Down: Move to end of file
 
+
+if vim.g.neovide then
+  -- Glass-like transparency
+  vim.g.neovide_opacity = 0.88
+  vim.g.neovide_normal_opacity = 0.82
+
+  -- Floating windows
+  vim.g.neovide_floating_blur_amount_x = 4.0
+  vim.g.neovide_floating_blur_amount_y = 4.0
+
+  -- Floating window shadows
+  vim.g.neovide_floating_shadow = true
+  vim.g.neovide_floating_z_height = 10
+  vim.g.neovide_light_angle_degrees = 45
+  vim.g.neovide_light_radius = 5
+
+  -- Rounded floating windows
+  vim.g.neovide_floating_corner_radius = 0.35
+
+  -- Padding
+  vim.g.neovide_padding_top = 8
+  vim.g.neovide_padding_bottom = 8
+  vim.g.neovide_padding_right = 8
+  vim.g.neovide_padding_left = 8
+end
+
 -- [[ Basic Autocommands ]]
 --  See `:help lua-guide-autocommands`
 
@@ -397,6 +423,457 @@ if not (vim.uv or vim.loop).fs_stat(lazypath) then
     error('Error cloning lazy.nvim:\n' .. out)
   end
 end
+
+
+-- [[ Matugen theme ]]
+local function apply_matugen()
+  local ok, colors = pcall(dofile, vim.fn.stdpath('config') .. '/matugen.lua')
+
+  if not ok then
+    vim.notify('Failed to load Matugen colors', vim.log.levels.ERROR)
+    return
+  end
+
+  local set = vim.api.nvim_set_hl
+
+  -- ============================================================
+  -- Core editor
+  -- ============================================================
+
+  set(0, 'Normal', { fg = colors.fg, bg = 'NONE' })
+  set(0, 'NormalNC', { fg = colors.fg, bg = 'NONE' })
+  set(0, 'NormalFloat', { fg = colors.fg, bg = colors.bg_float })
+  set(0, 'FloatTitle', { fg = colors.primary, bg = colors.bg_float, bold = true })
+  set(0, 'FloatBorder', { fg = colors.primary, bg = colors.bg_float })
+
+  set(0, 'EndOfBuffer', { fg = colors.bg, bg = 'NONE' })
+
+  set(0, 'Cursor', { fg = colors.bg, bg = colors.primary })
+  set(0, 'CursorLine', { bg = colors.bg_alt })
+  set(0, 'CursorLineNr', { fg = colors.primary, bold = true })
+
+  set(0, 'Visual', { fg = colors.fg, bg = colors.primary_container })
+  set(0, 'VisualNOS', { fg = colors.fg, bg = colors.primary_container })
+
+  set(0, 'Search', { fg = colors.bg, bg = colors.primary })
+  set(0, 'IncSearch', { fg = colors.bg, bg = colors.tertiary })
+  set(0, 'CurSearch', { fg = colors.bg, bg = colors.tertiary })
+
+  set(0, 'MatchParen', {
+    fg = colors.primary,
+    bg = colors.primary_container,
+    bold = true,
+  })
+
+  -- ============================================================
+  -- UI
+  -- ============================================================
+
+  set(0, 'LineNr', { fg = colors.fg_muted })
+  set(0, 'SignColumn', { fg = colors.fg_muted, bg = 'NONE' })
+
+  set(0, 'WinSeparator', { fg = colors.bg_alt, bg = colors.bg })
+
+  set(0, 'Folded', {
+    fg = colors.fg_muted,
+    bg = colors.bg_alt,
+  })
+
+  set(0, 'FoldColumn', {
+    fg = colors.fg_muted,
+    bg = 'NONE',
+  })
+
+  set(0, 'NonText', { fg = colors.bg_alt })
+  set(0, 'Whitespace', { fg = colors.bg_alt })
+  set(0, 'SpecialKey', { fg = colors.fg_muted })
+
+  set(0, 'Directory', { fg = colors.primary })
+
+  -- ============================================================
+  -- Popup menu / completion
+  -- ============================================================
+
+  set(0, 'Pmenu', {
+    fg = colors.fg,
+    bg = colors.bg_float,
+  })
+
+  set(0, 'PmenuSel', {
+    fg = colors.fg,
+    bg = colors.primary_container,
+    bold = true,
+  })
+
+  set(0, 'PmenuSbar', {
+    bg = colors.bg_alt,
+  })
+
+  set(0, 'PmenuThumb', {
+    bg = colors.primary,
+  })
+
+  set(0, 'WildMenu', {
+    fg = colors.fg,
+    bg = colors.primary_container,
+  })
+
+  -- ============================================================
+  -- Syntax
+  -- ============================================================
+
+  set(0, 'Comment', {
+    fg = colors.fg_muted,
+    italic = true,
+  })
+
+  set(0, 'String', { fg = colors.green })
+  set(0, 'Character', { fg = colors.green })
+
+  set(0, 'Number', { fg = colors.orange })
+  set(0, 'Float', { fg = colors.orange })
+  set(0, 'Boolean', { fg = colors.orange })
+  set(0, 'Constant', { fg = colors.orange })
+
+  set(0, 'Function', { fg = colors.blue })
+  set(0, 'Identifier', { fg = colors.fg })
+
+  set(0, 'Keyword', { fg = colors.purple })
+  set(0, 'Statement', { fg = colors.purple })
+
+  set(0, 'Type', { fg = colors.yellow })
+  set(0, 'Structure', { fg = colors.yellow })
+
+  set(0, 'Operator', { fg = colors.cyan })
+  set(0, 'PreProc', { fg = colors.purple })
+
+  set(0, 'Special', { fg = colors.cyan })
+  set(0, 'Delimiter', { fg = colors.fg_muted })
+
+  -- ============================================================
+  -- Tree-sitter
+  -- ============================================================
+
+  set(0, '@comment', {
+    fg = colors.fg_muted,
+    italic = true,
+  })
+
+  set(0, '@string', { fg = colors.green })
+  set(0, '@string.escape', { fg = colors.cyan })
+  set(0, '@string.special', { fg = colors.cyan })
+
+  set(0, '@number', { fg = colors.orange })
+  set(0, '@float', { fg = colors.orange })
+  set(0, '@boolean', { fg = colors.orange })
+
+  set(0, '@constant', { fg = colors.orange })
+  set(0, '@constant.builtin', { fg = colors.orange })
+
+  set(0, '@function', { fg = colors.blue })
+  set(0, '@function.call', { fg = colors.blue })
+  set(0, '@function.builtin', { fg = colors.cyan })
+  set(0, '@function.method', { fg = colors.blue })
+
+  set(0, '@method', { fg = colors.blue })
+  set(0, '@method.call', { fg = colors.blue })
+
+  set(0, '@variable', { fg = colors.fg })
+  set(0, '@variable.builtin', { fg = colors.cyan })
+  set(0, '@variable.member', { fg = colors.secondary })
+  set(0, '@parameter', { fg = colors.fg })
+
+  set(0, '@property', { fg = colors.secondary })
+  set(0, '@field', { fg = colors.secondary })
+
+  set(0, '@keyword', { fg = colors.purple })
+  set(0, '@keyword.function', { fg = colors.purple })
+  set(0, '@keyword.return', { fg = colors.purple })
+  set(0, '@keyword.operator', { fg = colors.purple })
+  set(0, '@conditional', { fg = colors.purple })
+  set(0, '@repeat', { fg = colors.purple })
+
+  set(0, '@type', { fg = colors.yellow })
+  set(0, '@type.builtin', { fg = colors.yellow })
+  set(0, '@type.definition', { fg = colors.yellow })
+
+  set(0, '@constructor', { fg = colors.yellow })
+  set(0, '@operator', { fg = colors.cyan })
+
+  set(0, '@punctuation', { fg = colors.fg_muted })
+  set(0, '@punctuation.bracket', { fg = colors.fg_muted })
+  set(0, '@punctuation.delimiter', { fg = colors.fg_muted })
+
+  -- ============================================================
+  -- Diagnostics
+  -- ============================================================
+
+  set(0, 'DiagnosticError', { fg = colors.error })
+  set(0, 'DiagnosticWarn', { fg = colors.orange })
+  set(0, 'DiagnosticInfo', { fg = colors.blue })
+  set(0, 'DiagnosticHint', { fg = colors.cyan })
+  set(0, 'DiagnosticOk', { fg = colors.green })
+
+  set(0, 'DiagnosticUnderlineError', {
+    undercurl = true,
+    sp = colors.error,
+  })
+
+  set(0, 'DiagnosticUnderlineWarn', {
+    undercurl = true,
+    sp = colors.orange,
+  })
+
+  set(0, 'DiagnosticUnderlineInfo', {
+    undercurl = true,
+    sp = colors.blue,
+  })
+
+  set(0, 'DiagnosticUnderlineHint', {
+    undercurl = true,
+    sp = colors.cyan,
+  })
+
+  -- ============================================================
+  -- LSP semantic tokens
+  -- ============================================================
+
+  set(0, '@lsp.type.class', { fg = colors.yellow })
+  set(0, '@lsp.type.decorator', { fg = colors.purple })
+  set(0, '@lsp.type.enum', { fg = colors.yellow })
+  set(0, '@lsp.type.enumMember', { fg = colors.orange })
+  set(0, '@lsp.type.function', { fg = colors.blue })
+  set(0, '@lsp.type.interface', { fg = colors.yellow })
+  set(0, '@lsp.type.keyword', { fg = colors.purple })
+  set(0, '@lsp.type.method', { fg = colors.blue })
+  set(0, '@lsp.type.namespace', { fg = colors.yellow })
+  set(0, '@lsp.type.parameter', { fg = colors.fg })
+  set(0, '@lsp.type.property', { fg = colors.secondary })
+  set(0, '@lsp.type.string', { fg = colors.green })
+  set(0, '@lsp.type.struct', { fg = colors.yellow })
+  set(0, '@lsp.type.type', { fg = colors.yellow })
+  set(0, '@lsp.type.typeParameter', { fg = colors.yellow })
+  set(0, '@lsp.type.variable', { fg = colors.fg })
+
+  -- ============================================================
+  -- Git / Gitsigns
+  -- ============================================================
+
+  set(0, 'DiffAdd', {
+    fg = colors.green,
+    bg = colors.bg,
+  })
+
+  set(0, 'DiffChange', {
+    fg = colors.yellow,
+    bg = colors.bg,
+  })
+
+  set(0, 'DiffDelete', {
+    fg = colors.red,
+    bg = colors.bg,
+  })
+
+  set(0, 'DiffText', {
+    fg = colors.yellow,
+    bg = colors.primary_container,
+  })
+
+  set(0, 'GitSignsAdd', { fg = colors.green })
+  set(0, 'GitSignsChange', { fg = colors.yellow })
+  set(0, 'GitSignsDelete', { fg = colors.red })
+
+  -- ============================================================
+  -- Telescope
+  -- ============================================================
+
+  set(0, 'TelescopeNormal', {
+    fg = colors.fg,
+    bg = colors.bg_float,
+  })
+
+  set(0, 'TelescopeBorder', {
+    fg = colors.primary,
+    bg = colors.bg_float,
+  })
+
+  set(0, 'TelescopePromptNormal', {
+    fg = colors.fg,
+    bg = colors.bg_alt,
+  })
+
+  set(0, 'TelescopePromptBorder', {
+    fg = colors.primary,
+    bg = colors.bg_alt,
+  })
+
+  set(0, 'TelescopePromptTitle', {
+    fg = colors.bg,
+    bg = colors.primary,
+    bold = true,
+  })
+
+  set(0, 'TelescopePreviewTitle', {
+    fg = colors.bg,
+    bg = colors.secondary,
+    bold = true,
+  })
+
+  set(0, 'TelescopeResultsTitle', {
+    fg = colors.bg,
+    bg = colors.tertiary,
+    bold = true,
+  })
+
+  set(0, 'TelescopeSelection', {
+    fg = colors.fg,
+    bg = colors.primary_container,
+    bold = true,
+  })
+
+  set(0, 'TelescopeMatching', {
+    fg = colors.primary,
+    bold = true,
+  })
+
+  -- ============================================================
+  -- Neo-tree
+  -- ============================================================
+
+  set(0, 'NeoTreeNormal', {
+    fg = colors.fg,
+    bg = colors.bg,
+  })
+
+  set(0, 'NeoTreeNormalNC', {
+    fg = colors.fg,
+    bg = colors.bg,
+  })
+
+  set(0, 'NeoTreeDirectoryName', {
+    fg = colors.primary,
+  })
+
+  set(0, 'NeoTreeDirectoryIcon', {
+    fg = colors.primary,
+  })
+
+  set(0, 'NeoTreeFileName', {
+    fg = colors.fg,
+  })
+
+  set(0, 'NeoTreeFileNameOpened', {
+    fg = colors.primary,
+    bold = true,
+  })
+
+  set(0, 'NeoTreeGitAdded', {
+    fg = colors.green,
+  })
+
+  set(0, 'NeoTreeGitModified', {
+    fg = colors.yellow,
+  })
+
+  set(0, 'NeoTreeGitDeleted', {
+    fg = colors.red,
+  })
+
+  set(0, 'NeoTreeGitConflict', {
+    fg = colors.error,
+    bold = true,
+  })
+
+  set(0, 'NeoTreeFloatNormal', {
+    fg = colors.fg,
+    bg = colors.bg_float,
+  })
+
+  set(0, 'NeoTreeFloatBorder', {
+    fg = colors.primary,
+    bg = colors.bg_float,
+  })
+
+  -- ============================================================
+  -- Statusline / tabline
+  -- ============================================================
+
+  set(0, 'StatusLine', {
+    fg = colors.fg,
+    bg = colors.bg_alt,
+  })
+
+  set(0, 'StatusLineNC', {
+    fg = colors.fg_muted,
+    bg = colors.bg_alt,
+  })
+
+  set(0, 'TabLine', {
+    fg = colors.fg_muted,
+    bg = colors.bg_alt,
+  })
+
+  set(0, 'TabLineFill', {
+    fg = colors.fg_muted,
+    bg = colors.bg,
+  })
+
+  set(0, 'TabLineSel', {
+    fg = colors.bg,
+    bg = colors.primary,
+    bold = true,
+  })
+
+  -- ============================================================
+  -- Folding
+  -- ============================================================
+
+  set(0, 'UfoFoldedEllipsis', {
+    fg = colors.fg_muted,
+    bg = colors.bg_alt,
+  })
+
+  -- ============================================================
+  -- Misc
+  -- ============================================================
+
+  set(0, 'Title', {
+    fg = colors.primary,
+    bold = true,
+  })
+
+  set(0, 'ErrorMsg', {
+    fg = colors.error,
+    bold = true,
+  })
+
+  set(0, 'WarningMsg', {
+    fg = colors.orange,
+  })
+
+  set(0, 'MoreMsg', {
+    fg = colors.primary,
+  })
+
+  set(0, 'Question', {
+    fg = colors.primary,
+  })
+
+  set(0, 'ModeMsg', {
+    fg = colors.secondary,
+  })
+
+  set(0, 'Conceal', {
+    fg = colors.fg_muted,
+  })
+end
+
+vim.api.nvim_create_autocmd('Signal', {
+  pattern = 'SIGUSR1',
+  callback = function()
+    apply_matugen()
+  end,
+})
 
 ---@type vim.Option
 local rtp = vim.opt.rtp
@@ -1051,32 +1528,32 @@ require('lazy').setup({
     },
   },
 
-  {
-    'projekt0n/github-nvim-theme',
-  }, --  github
-  {
-    'ellisonleao/gruvbox.nvim',
-  },
-  {
-    'shaunsingh/nord.nvim',
-  },
-  {
-    'sainnhe/everforest',
-  },
-  {
-    'catppuccin/nvim',
-    lazy = false,
-    priority = 1000,
-    config = function()
-      vim.cmd 'colorscheme catppuccin-mocha'
-    end,
-  },
-  {
-    'barrientosvctor/abyss.nvim',
-  },
-  {
-    'Mofiqul/vscode.nvim',
-  },
+  -- {
+  --   'projekt0n/github-nvim-theme',
+  -- }, --  github
+  -- {
+  --   'ellisonleao/gruvbox.nvim',
+  --   lazy = false,
+  --   priority = 1000,
+  --   config = function()
+  --     vim.cmd 'colorscheme gruvbox'
+  --   end,
+  -- },
+  -- {
+  --   'shaunsingh/nord.nvim',
+  -- },
+  -- {
+  --   'sainnhe/everforest',
+  -- },
+  -- {
+  --   'catppuccin/nvim',
+  -- },
+  -- {
+  --   'barrientosvctor/abyss.nvim',
+  -- },
+  -- {
+  --   'Mofiqul/vscode.nvim',
+  -- },
 
   -- Highlight todo, notes, etc in comments
   { 'folke/todo-comments.nvim', event = 'VimEnter', dependencies = { 'nvim-lua/plenary.nvim' }, opts = { signs = false } },
@@ -1403,3 +1880,8 @@ end, { desc = 'Close all buffers except the current one' })
 
 -- Map <leader>bK to run :BufOnly
 vim.keymap.set('n', '<leader>bK', '<cmd>BufOnly<cr>', { desc = 'Keep only current buffer' })
+
+
+
+-- [[ Matugen theme ]]
+apply_matugen()
