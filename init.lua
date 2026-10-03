@@ -292,8 +292,8 @@ vim.keymap.set('i', '<A-Down>', '<C-o>G', { noremap = true, silent = true }) -- 
 
 if vim.g.neovide then
   -- Glass-like transparency
-  vim.g.neovide_opacity = 0.88
-  vim.g.neovide_normal_opacity = 0.82
+  vim.g.neovide_opacity = 1
+  vim.g.neovide_normal_opacity = 1
 
   -- Floating windows
   vim.g.neovide_floating_blur_amount_x = 4.0
