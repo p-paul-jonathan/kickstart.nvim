@@ -1,25 +1,25 @@
 return {
-  bg = "#18130b",
-  bg_alt = "#241f17",
-  bg_float = "#2f2921",
+  bg = "#141318",
+  bg_alt = "#201f25",
+  bg_float = "#2b292f",
 
-  fg = "#ece1d4",
-  fg_muted = "#d2c4b4",
+  fg = "#e5e1e9",
+  fg_muted = "#c9c5d0",
 
-  primary = "#f1be6d",
-  primary_container = "#604100",
+  primary = "#c9bfff",
+  primary_container = "#473f77",
 
-  secondary = "#dbc3a1",
-  tertiary = "#b5cea4",
+  secondary = "#c9c3dc",
+  tertiary = "#edb8cd",
 
   error = "#ffb4ab",
 
   -- Semantic colors
   red = "#ffb4ab",
-  orange = "#b5cea4",
-  yellow = "#dbc3a1",
-  green = "#f1be6d",
-  cyan = "#dbc3a1",
-  blue = "#f1be6d",
-  purple = "#b5cea4",
+  orange = "#edb8cd",
+  yellow = "#c9c3dc",
+  green = "#c9bfff",
+  cyan = "#c9c3dc",
+  blue = "#c9bfff",
+  purple = "#edb8cd",
 }
